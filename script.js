@@ -77,18 +77,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function changeColor(index, newColor) {
-        if (index >= 0 && index < 100) {
+        if (index >= 0 && index < 400) {
             gameContainer.children[index].className = 'square ' + newColor;
         }
     }
 
     function changeSurroundingColors(index, newColor) {
-        const row = Math.floor(index / 10);
-        const col = index % 10;
-        const offsets = [-11, -10, -9, -1, 1, 9, 10, 11].filter(offset => {
-            const newRow = row + Math.floor(offset / 10);
-            const newCol = col + offset % 10;
-            return newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10;
+        const row = Math.floor(index / 20);
+        const col = index % 20;
+        const offsets = [-21, -20, -19, -1, 1, 19, 20, 21].filter(offset => {
+            const newRow = row + Math.floor(offset / 20);
+            const newCol = col + offset % 20;
+            return newRow >= 0 && newRow < 20 && newCol >= 0 && newCol < 20;
         });
 
         offsets.forEach(offset => {
@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function changeAboveBelow(index, newColor) {
-        [-10, 10].forEach(offset => {
-            if (index + offset >= 0 && index + offset < 100) {
+        [-20, 20].forEach(offset => {
+            if (index + offset >= 0 && index + offset < 400) {
                 changeColor(index + offset, newColor);
             }
         });
