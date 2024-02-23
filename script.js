@@ -60,25 +60,22 @@ function handleSquareClick(event) {
     const rules = colorRules[color] || [];
 
     rules.forEach(rule => {
-        switch(rule) {
-            case 'selfBlack':
-                changeColor(index, 'black'); // Turns the clicked square itself black
-                break;
-            case 'surroundingYellow':
-                changeSurroundingColors(index, 'deepYellow'); // Turns surrounding squares yellow
-                break;
-            // Other cases remain unchanged
-            case 'left':
-            case 'right':
-                changeColor(index + directionOffsets[rule], colorChangeMap[color]);
-                break;
-            case 'above':
-            case 'below':
-                changeColor(index + directionOffsets[rule], colorChangeMap[color]);
-                break;
-            case 'surrounding':
-                changeSurroundingColors(index, colorChangeMap[color]);
-                break;
+        if (rule === 'selfBlack') {
+            changeColor(index, 'black'); // Turns the clicked square itself black
+        } else if (rule === 'surroundingYellow') {
+            changeSurroundingColors(index, 'deepYellow', row, col); // Turns surrounding squares yellow
+        } else if (rule === 'surroundingBlack') {
+            changeSurroundingColors(index, 'black', row, col); // Turns surrounding squares black
+        } else {
+            // Apply other rules as needed, e.g., for 'tonedRed' or 'deepYellow'
+            if (color === 'tonedRed') {
+                // For tonedRed, you might want to change all surrounding squares to a specific color
+                changeSurroundingColors(index, 'brightBlue', row, col);
+            } else if (color === 'deepYellow') {
+                // For deepYellow, change above and below squares
+                if (row > 0) changeColor(index - 10, 'ecoGreen'); // Above
+                if (row < 9) changeColor(index + 10, 'ecoGreen'); // Below
+            }
         }
     });
 
@@ -100,9 +97,25 @@ function changeColor(index, newColor) {
 }
 
 // Function to change the colors of the surrounding squares
-function changeSurroundingColors(index, newColor) {
-    [-1, 1, -10, 10, -9, -11, 9, 11].forEach(offset => {
-        changeColor(index + offset, newColor);
+function changeSurroundingColors(index, newColor, row, col) {
+    const offsets = [
+        { rowOffset: -1, colOffset: 0 }, // Above
+        { rowOffset: 1, colOffset: 0 }, // Below
+        { rowOffset: 0, colOffset: -1 }, // Left
+        { rowOffset: 0, colOffset: 1 }, // Right
+        { rowOffset: -1, colOffset: -1 }, // Top Left
+        { rowOffset: -1, colOffset: 1 }, // Top Right
+        { rowOffset: 1, colOffset: -1 }, // Bottom Left
+        { rowOffset: 1, colOffset: 1 } // Bottom Right
+    ];
+
+    offsets.forEach(({ rowOffset, colOffset }) => {
+        const newRow = row + rowOffset;
+        const newCol = col + colOffset;
+        if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
+            const targetIndex = newRow * 10 + newCol;
+            changeColor(targetIndex, newColor);
+        }
     });
 }
 
