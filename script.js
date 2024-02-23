@@ -1,11 +1,12 @@
 const gameContainer = document.getElementById('gameContainer');
 const colors = ['brightBlue', 'deepYellow', 'tonedRed', 'black', 'ecoGreen'];
 const colorRules = {
-    brightBlue: ['left', 'right'],
+    brightBlue: ['selfBlack', 'surroundingYellow'], // New behavior for brightBlue
     tonedRed: ['surrounding'],
     deepYellow: ['above', 'below'],
     ecoGreen: ['self', 'surrounding']
 };
+
 const colorChangeMap = {
     brightBlue: 'tonedRed',
     tonedRed: 'brightBlue',
@@ -57,29 +58,36 @@ function handleSquareClick(event) {
 
     rules.forEach(rule => {
         switch(rule) {
-            case 'left':
-                changeColor(index - 1, colorChangeMap[color]);
+            case 'selfBlack':
+                changeColor(index, 'black'); // Turns the clicked square itself black
                 break;
+            case 'surroundingYellow':
+                changeSurroundingColors(index, 'deepYellow'); // Turns surrounding squares yellow
+                break;
+            // Other cases remain unchanged
+            case 'left':
             case 'right':
-                changeColor(index + 1, colorChangeMap[color]);
+                changeColor(index + directionOffsets[rule], colorChangeMap[color]);
                 break;
             case 'above':
-                changeColor(index - 10, colorChangeMap[color]);
-                break;
             case 'below':
-                changeColor(index + 10, colorChangeMap[color]);
+                changeColor(index + directionOffsets[rule], colorChangeMap[color]);
                 break;
             case 'surrounding':
                 changeSurroundingColors(index, colorChangeMap[color]);
-                break;
-            case 'self':
-                changeColor(index, 'black'); // Turns the clicked square black
                 break;
         }
     });
 
     checkWinCondition();
 }
+
+const directionOffsets = {
+    'left': -1,
+    'right': 1,
+    'above': -10,
+    'below': 10
+};
 
 // Function to change the color of a square
 function changeColor(index, newColor) {
