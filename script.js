@@ -27,11 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createBoard() {
         gameContainer.innerHTML = '';
-        let squares = Array(100).fill('black')
+        let squares = Array(200).fill('black')
             .concat(Array(10).fill('ecoGreen'))
             .concat(Array(30).fill('deepYellow'))
-            .concat(Array(30).fill('tonedRed'))
-            .concat(Array(30).fill('brightBlue'));
+            .concat(Array(80).fill('tonedRed'))
+            .concat(Array(80).fill('brightBlue'));
         squares = shuffleArray(squares);
 
         squares.forEach(color => {
