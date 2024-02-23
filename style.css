@@ -1,0 +1,32 @@
+body {
+    background-color: #A6E2DC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.game-container {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-gap: 2px;
+    border: 5px solid #707070; /* Medium grey border */
+}
+
+.square {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.instructions-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
