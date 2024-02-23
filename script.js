@@ -1,25 +1,6 @@
 const gameContainer = document.getElementById('gameContainer');
-const colors = ['brightBlue', 'deepYellow', 'tonedRed', 'black', 'ecoGreen'];
-const colorRules = {
-    brightBlue: ['selfBlack', 'surroundingYellow'], // New behavior for brightBlue
-    tonedRed: ['surrounding'],
-    deepYellow: ['above', 'below'],
-    ecoGreen: ['selfBlack', 'surrounding']
-};
 
-const colorChangeMap = {
-    brightBlue: 'deepYellow', // When bright blue is clicked, surrounding squares turn yellow (not tonedRed)
-    ecoGreen: 'black', // When eco green is clicked, it and surrounding squares turn black
-    tonedRed: 'brightBlue', // Surrounding squares turn blue when toned red is clicked (unchanged)
-    deepYellow: 'ecoGreen', // Above and below squares turn green when deep yellow is clicked (unchanged)
-    selfBlack: 'black', // Used for turning the clicked square black (for brightBlue and ecoGreen)
-    surroundingYellow: 'deepYellow' // This specific mapping might not be necessary if using direct color values
-};
-
-// Function to initialize the game board
-const gameContainer = document.getElementById('gameContainer');
-
-// Define color rules and mappings
+// Color transformation rules
 const colorRules = {
     brightBlue: ['selfBlack', 'surroundingYellow'],
     tonedRed: ['surroundingBlue'],
@@ -27,7 +8,16 @@ const colorRules = {
     ecoGreen: ['selfSurroundingBlack']
 };
 
-// Initialize the game board with a fixed number of each color
+// Color change map for easy reference to what color to change to
+const colorChangeMap = {
+    selfBlack: 'black',
+    surroundingYellow: 'deepYellow',
+    surroundingBlue: 'brightBlue',
+    aboveBelowGreen: 'ecoGreen',
+    selfSurroundingBlack: 'black'
+};
+
+// Initialize the game board with specific counts of each color
 function createBoard() {
     let squares = Array(50).fill('black')
         .concat(Array(5).fill('ecoGreen'))
@@ -39,12 +29,16 @@ function createBoard() {
     squares.forEach(color => {
         const square = document.createElement('div');
         square.classList.add('square', color);
+        square.style.width = '30px'; // Set the size of squares
+        square.style.height = '30px';
+        square.style.float = 'left'; // Align squares in a grid format
+        square.style.border = '1px solid #000'; // Optional: add borders to squares
         square.addEventListener('click', handleSquareClick);
         gameContainer.appendChild(square);
     });
 }
 
-// Shuffle the squares array
+// Shuffle function for the array of squares
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -53,23 +47,29 @@ function shuffleArray(array) {
     return array;
 }
 
-// Handle square click events
+// Handle click events on squares and apply the game rules
 function handleSquareClick(event) {
     const square = event.target;
     const color = square.classList[1];
-    const index = [...gameContainer.children].indexOf(square);
+    const index = Array.from(gameContainer.children).indexOf(square);
 
-    if (color === 'brightBlue') {
-        changeColor(index, 'black'); // Blue turns itself black
-        changeSurroundingColors(index, 'deepYellow'); // Surrounding squares turn yellow
-    } else if (color === 'ecoGreen') {
-        changeColor(index, 'black'); // Green turns itself black
-        changeSurroundingColors(index, 'black'); // Surrounding squares turn black
-    } else if (color === 'tonedRed') {
-        changeSurroundingColors(index, 'brightBlue'); // Surrounding squares turn blue
-    } else if (color === 'deepYellow') {
-        changeAboveBelow(index, 'ecoGreen'); // Above and below squares turn green
-    }
+    Object.entries(colorRules[color]).forEach(([key, value]) => {
+        if (value.includes('selfBlack') || value.includes('selfSurroundingBlack')) {
+            changeColor(index, colorChangeMap.selfBlack); // Change the clicked square to black
+        }
+        if (value.includes('surroundingYellow')) {
+            changeSurroundingColors(index, colorChangeMap.surroundingYellow);
+        }
+        if (value.includes('surroundingBlue')) {
+            changeSurroundingColors(index, colorChangeMap.surroundingBlue);
+        }
+        if (value.includes('aboveBelowGreen')) {
+            changeAboveBelow(index, colorChangeMap.aboveBelowGreen);
+        }
+        if (value.includes('selfSurroundingBlack')) {
+            changeSurroundingColors(index, colorChangeMap.selfSurroundingBlack);
+        }
+    });
 
     checkWinCondition();
 }
@@ -81,45 +81,38 @@ function changeColor(index, newColor) {
     }
 }
 
-// Change the colors of the surrounding squares
+// Change the colors of the surrounding squares, accounting for edge cases
 function changeSurroundingColors(index, newColor) {
     const row = Math.floor(index / 10);
     const col = index % 10;
     const offsets = [
-        {rowOffset: -1, colOffset: 0}, // Above
-        {rowOffset: 1, colOffset: 0}, // Below
-        {rowOffset: 0, colOffset: -1}, // Left
-        {rowOffset: 0, colOffset: 1}, // Right
-        {rowOffset: -1, colOffset: -1}, // Top Left
-        {rowOffset: -1, colOffset: 1}, // Top Right
-        {rowOffset: 1, colOffset: -1}, // Bottom Left
-        {rowOffset: 1, colOffset: 1} // Bottom Right
-    ];
+        -11, -10, -9, -1, 1, 9, 10, 11
+    ].filter(offset => {
+        const newRow = row + Math.floor(offset / 10);
+        const newCol = col + offset % 10;
+        return newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10;
+    });
 
-    offsets.forEach(({rowOffset, colOffset}) => {
-        const newRow = row + rowOffset;
-        const newCol = col + colOffset;
-        if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10) {
-            const targetIndex = newRow * 10 + newCol;
-            changeColor(targetIndex, newColor);
-        }
+    offsets.forEach(offset => {
+        changeColor(index + offset, newColor);
     });
 }
 
 // Change the colors of the squares above and below the clicked square
 function changeAboveBelow(index, newColor) {
-    const above = index - 10;
-    const below = index + 10;
-    if (above >= 0) changeColor(above, newColor);
-    if (below < 100) changeColor(below, newColor);
+    [-10, 10].forEach(offset => {
+        if (index + offset >= 0 && index + offset < 100) {
+            changeColor(index + offset, newColor);
+        }
+    });
 }
 
-// Check if all squares are black (win condition)
+// Check if all squares are black to determine the win condition
 function checkWinCondition() {
-    const allBlack = [...gameContainer.children].every(square => square.classList.contains('black'));
+    const allBlack = Array.from(gameContainer.children).every(square => square.classList.contains('black'));
     if (allBlack) {
         alert('Congratulations! You won!');
     }
 }
 
-createBoard(); // Initialize the game board
+createBoard(); // Call to initialize the game board
