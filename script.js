@@ -4,14 +4,17 @@ const colorRules = {
     brightBlue: ['selfBlack', 'surroundingYellow'], // New behavior for brightBlue
     tonedRed: ['surrounding'],
     deepYellow: ['above', 'below'],
-    ecoGreen: ['self', 'surrounding']
+    ecoGreen: ['selfBlack', 'surrounding']
 };
 
 const colorChangeMap = {
     brightBlue: 'tonedRed',
     tonedRed: 'brightBlue',
     deepYellow: 'ecoGreen',
-    ecoGreen: 'black'
+    ecoGreen: 'black',
+    selfBlack: 'black', // Used for turning the clicked square black
+    surroundingYellow: 'deepYellow', // Used for turning surrounding squares yellow
+    surroundingBlack: 'black'
 };
 
 // Function to initialize the game board
