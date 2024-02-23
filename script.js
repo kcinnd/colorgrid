@@ -4,7 +4,7 @@ const colorRules = {
     brightBlue: ['left', 'right'],
     tonedRed: ['surrounding'],
     deepYellow: ['above', 'below'],
-    ecoGreen: ['surrounding']
+    ecoGreen: ['self', 'surrounding']
 };
 const colorChangeMap = {
     brightBlue: 'tonedRed',
@@ -71,6 +71,9 @@ function handleSquareClick(event) {
                 break;
             case 'surrounding':
                 changeSurroundingColors(index, colorChangeMap[color]);
+                break;
+            case 'self':
+                changeColor(index, 'black'); // Turns the clicked square black
                 break;
         }
     });
