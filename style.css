@@ -21,12 +21,14 @@ body {
 }
 
 .instructions-box {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    position: fixed; /* Changed to fixed to keep it in view */
+    top: 20px; /* Position it at the top */
+    left: 20px; /* Position it from the left */
+    max-width: 300px; /* Limit the width */
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
+    z-index: 10; /* Ensure it's above other elements */
 }
