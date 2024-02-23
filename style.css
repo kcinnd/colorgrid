@@ -36,3 +36,23 @@ body {
     z-index: 10; /* Ensure it's above other elements */
     max-width: 80%; /* Prevent it from becoming too wide */
 }
+
+.brightBlue {
+    background-color: #0000FF; /* Bright blue color code */
+}
+
+.deepYellow {
+    background-color: #FFD700; /* Deep yellow color code */
+}
+
+.tonedRed {
+    background-color: #8B0000; /* Toned red color code */
+}
+
+.black {
+    background-color: #000000; /* Black */
+}
+
+.ecoGreen {
+    background-color: #00FF00; /* Eco-green color code */
+}
