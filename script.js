@@ -15,12 +15,32 @@ const colorChangeMap = {
 
 // Function to initialize the game board
 function createBoard() {
-    for (let i = 0; i < 100; i++) {
+    // Create an array with a fixed number of each color
+    let squares = Array(50).fill('black')
+        .concat(Array(15).fill('ecoGreen'))
+        .concat(Array(10).fill('deepYellow'))
+        .concat(Array(10).fill('tonedRed'))
+        .concat(Array(15).fill('brightBlue'));
+
+    // Shuffle the array to randomize the squares' positions
+    squares = shuffleArray(squares);
+
+    // Create each square and append it to the game container
+    squares.forEach(color => {
         const square = document.createElement('div');
-        square.classList.add('square', getRandomColor());
+        square.classList.add('square', color);
         square.addEventListener('click', handleSquareClick);
         gameContainer.appendChild(square);
+    });
+}
+
+// Function to shuffle an array (Fisher-Yates shuffle algorithm)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
     }
+    return array;
 }
 
 // Function to get a random color
