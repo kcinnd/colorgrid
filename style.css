@@ -1,10 +1,12 @@
 body {
     background-color: #A6E2DC;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center children horizontally */
+    justify-content: center; /* Center children vertically */
     height: 100vh;
     margin: 0;
+    padding: 40px 0; /* Add some padding at the top and bottom */
 }
 
 .game-container {
@@ -12,6 +14,7 @@ body {
     grid-template-columns: repeat(10, 1fr);
     grid-gap: 2px;
     border: 5px solid #707070; /* Medium grey border */
+    margin-top: 20px; /* Ensure some space between the instructions box and the game board */
 }
 
 .square {
@@ -21,14 +24,15 @@ body {
 }
 
 .instructions-box {
-    position: fixed; /* Changed to fixed to keep it in view */
-    top: 20px; /* Position it at the top */
-    left: 20px; /* Position it from the left */
-    max-width: 300px; /* Limit the width */
+    position: fixed; /* Fixed positioning */
+    top: 10px; /* Position at the top */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center align the element */
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
     z-index: 10; /* Ensure it's above other elements */
+    max-width: 80%; /* Prevent it from becoming too wide */
 }
