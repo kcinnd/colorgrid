@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function createBoard() {
-        gameContainer.innerHTML = '';  // Clear the game container before creating a new board
+        gameContainer.innerHTML = '';
         let squares = Array(50).fill('black')
             .concat(Array(5).fill('ecoGreen'))
             .concat(Array(15).fill('deepYellow'))
@@ -75,40 +75,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-// Change the colors of the surrounding squares, accounting for edge cases
-function changeSurroundingColors(index, newColor) {
-    const row = Math.floor(index / 10);
-    const col = index % 10;
-    const offsets = [
-        -11, -10, -9, -1, 1, 9, 10, 11
-    ].filter(offset => {
-        const newRow = row + Math.floor(offset / 10);
-        const newCol = col + offset % 10;
-        return newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10;
-    });
+    function changeSurroundingColors(index, newColor) {
+        const row = Math.floor(index / 10);
+        const col = index % 10;
+        const offsets = [-11, -10, -9, -1, 1, 9, 10, 11].filter(offset => {
+            const newRow = row + Math.floor(offset / 10);
+            const newCol = col + offset % 10;
+            return newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10;
+        });
 
-    offsets.forEach(offset => {
-        changeColor(index + offset, newColor);
-    });
-}
-
-// Change the colors of the squares above and below the clicked square
-function changeAboveBelow(index, newColor) {
-    [-10, 10].forEach(offset => {
-        if (index + offset >= 0 && index + offset < 100) {
+        offsets.forEach(offset => {
             changeColor(index + offset, newColor);
+        });
+    }
+
+    function changeAboveBelow(index, newColor) {
+        [-10, 10].forEach(offset => {
+            if (index + offset >= 0 && index + offset < 100) {
+                changeColor(index + offset, newColor);
+            }
+        });
+    }
+
+    function checkWinCondition() {
+        const allBlack = Array.from(gameContainer.children).every(square => square.classList.contains('black'));
+        if (allBlack) {
+            alert('Congratulations! You won!');
         }
-    });
-}
+    }
 
-// Check if all squares are black to determine the win condition
-function checkWinCondition() {
-    const allBlack = Array.from(gameContainer.children).every(square => square.classList.contains('black'));
-    if (allBlack) {
-        alert('Congratulations! You won!');
-}
-
-function resetGame() {
+    function resetGame() {
         createBoard();  // Call createBoard to reset the game
     }
 
