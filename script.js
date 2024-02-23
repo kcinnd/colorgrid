@@ -1,78 +1,82 @@
-const gameContainer = document.getElementById('gameContainer');
+document.addEventListener('DOMContentLoaded', function() {
+    const gameContainer = document.getElementById('gameContainer');
+    const resetButton = document.getElementById('resetButton');
 
-// Color transformation rules
-const colorRules = {
-    brightBlue: ['selfBlack', 'surroundingYellow'],
-    tonedRed: ['surroundingBlue'],
-    deepYellow: ['aboveBelowGreen'],
-    ecoGreen: ['selfSurroundingBlack']
-};
+    // Color transformation rules
+    const colorRules = {
+        brightBlue: ['selfBlack', 'surroundingYellow'],
+        tonedRed: ['surroundingBlue'],
+        deepYellow: ['aboveBelowGreen'],
+        ecoGreen: ['selfSurroundingBlack']
+    };
 
-// Color change map for easy reference to what color to change to
-const colorChangeMap = {
-    selfBlack: 'black',
-    surroundingYellow: 'deepYellow',
-    surroundingBlue: 'brightBlue',
-    aboveBelowGreen: 'ecoGreen',
-    selfSurroundingBlack: 'black'
-};
+    // Color change map for easy reference to what color to change to
+    const colorChangeMap = {
+        selfBlack: 'black',
+        surroundingYellow: 'deepYellow',
+        surroundingBlue: 'brightBlue',
+        aboveBelowGreen: 'ecoGreen',
+        selfSurroundingBlack: 'black'
+    };
 
-// Initialize the game board with specific counts of each color
-function createBoard() {
-    let squares = Array(50).fill('black')
-        .concat(Array(5).fill('ecoGreen'))
-        .concat(Array(15).fill('deepYellow'))
-        .concat(Array(15).fill('tonedRed'))
-        .concat(Array(15).fill('brightBlue'));
-    squares = shuffleArray(squares);
-
-    squares.forEach(color => {
-        const square = document.createElement('div');
-        square.classList.add('square', color);
-        square.style.width = '30px'; // Set the size of squares
-        square.style.height = '30px';
-        square.style.float = 'left'; // Align squares in a grid format
-        square.style.border = '1px solid #000'; // Optional: add borders to squares
-        square.addEventListener('click', handleSquareClick);
-        gameContainer.appendChild(square);
-    });
-}
-
-// Shuffle function for the array of squares
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
-    return array;
-}
 
-// Handle click events on squares and apply the game rules
-function handleSquareClick(event) {
-    const square = event.target;
-    const color = square.classList[1];
-    const index = Array.from(gameContainer.children).indexOf(square);
+    function createBoard() {
+        gameContainer.innerHTML = ''; // Clear existing game board first
+        let squares = Array(50).fill('black')
+            .concat(Array(5).fill('ecoGreen'))
+            .concat(Array(15).fill('deepYellow'))
+            .concat(Array(15).fill('tonedRed'))
+            .concat(Array(15).fill('brightBlue'));
+        squares = shuffleArray(squares);
 
-    Object.entries(colorRules[color]).forEach(([key, value]) => {
-        if (value.includes('selfBlack') || value.includes('selfSurroundingBlack')) {
-            changeColor(index, colorChangeMap.selfBlack); // Change the clicked square to black
-        }
-        if (value.includes('surroundingYellow')) {
-            changeSurroundingColors(index, colorChangeMap.surroundingYellow);
-        }
-        if (value.includes('surroundingBlue')) {
-            changeSurroundingColors(index, colorChangeMap.surroundingBlue);
-        }
-        if (value.includes('aboveBelowGreen')) {
-            changeAboveBelow(index, colorChangeMap.aboveBelowGreen);
-        }
-        if (value.includes('selfSurroundingBlack')) {
-            changeSurroundingColors(index, colorChangeMap.selfSurroundingBlack);
-        }
-    });
+        squares.forEach(color => {
+            const square = document.createElement('div');
+            square.classList.add('square', color);
+            square.style.width = '30px'; // Set the size of squares
+            square.style.height = '30px';
+            square.style.float = 'left'; // Align squares in a grid format
+            square.style.border = '1px solid #000'; // Optional: add borders to squares
+            square.addEventListener('click', handleSquareClick);
+            gameContainer.appendChild(square);
+        });
+    }
 
-    checkWinCondition();
-}
+    function handleSquareClick(event) {
+        const square = event.target;
+        const color = square.classList[1];
+        const index = Array.from(gameContainer.children).indexOf(square);
+
+        Object.entries(colorRules[color]).forEach(([key, value]) => {
+            if (value.includes('selfBlack') || value.includes('selfSurroundingBlack')) {
+                changeColor(index, colorChangeMap.selfBlack); // Change the clicked square to black
+            }
+            if (value.includes('surroundingYellow')) {
+                changeSurroundingColors(index, colorChangeMap.surroundingYellow);
+            }
+            if (value.includes('surroundingBlue')) {
+                changeSurroundingColors(index, colorChangeMap.surroundingBlue);
+            }
+            if (value.includes('aboveBelowGreen')) {
+                changeAboveBelow(index, colorChangeMap.aboveBelowGreen);
+            }
+            if (value.includes('selfSurroundingBlack')) {
+                changeSurroundingColors(index, colorChangeMap.selfSurroundingBlack);
+            }
+        });
+
+        checkWinCondition();
+    }
+
+    function resetGame() {
+        createBoard(); // Re-initialize the game board
+    }
 
 // Change the color of a specific square
 function changeColor(index, newColor) {
