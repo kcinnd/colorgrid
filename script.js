@@ -17,9 +17,9 @@ const colorChangeMap = {
 function createBoard() {
     // Create an array with a fixed number of each color
     let squares = Array(50).fill('black')
-        .concat(Array(15).fill('ecoGreen'))
-        .concat(Array(10).fill('deepYellow'))
-        .concat(Array(10).fill('tonedRed'))
+        .concat(Array(5).fill('ecoGreen'))
+        .concat(Array(15).fill('deepYellow'))
+        .concat(Array(15).fill('tonedRed'))
         .concat(Array(15).fill('brightBlue'));
 
     // Shuffle the array to randomize the squares' positions
