@@ -48,24 +48,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleSquareClick(event) {
         const square = event.target;
-        const color = square.classList[1];
-        const index = Array.from(gameContainer.children).indexOf(square);
-
-        Object.entries(colorRules[color]).forEach(([ruleType, ruleActions]) => {
-            ruleActions.forEach(action => {
-                if (action === 'selfBlack') {
-                    changeColor(index, 'black');
-                } else if (action in colorChangeMap) {
-                    const newColor = colorChangeMap[action];
-                    if (action === 'surroundingYellow' || action === 'surroundingBlue' || action === 'selfSurroundingBlack') {
-                        changeSurroundingColors(index, newColor);
-                    } else if (action === 'aboveBelowGreen') {
-                        changeAboveBelow(index, newColor);
-                    }
+        const colorClasses = ['brightBlue', 'deepYellow', 'tonedRed', 'ecoGreen']; // List of possible color classes
+        const color = colorClasses.find(cl => square.classList.contains(cl)); // Find the color class the square contains
+    
+        // Apply rules based on the color
+        if (colorRules[color]) {
+            colorRules[color].forEach(rule => {
+                // Apply self-black rule
+                if (rule === 'selfBlack') {
+                    changeColor(Array.from(gameContainer.children).indexOf(square), 'black');
+                }
+    
+                // Apply surrounding color change rules
+                if (rule === 'surroundingYellow') {
+                    changeSurroundingColors(Array.from(gameContainer.children).indexOf(square), 'deepYellow');
+                } else if (rule === 'surroundingBlue') {
+                    changeSurroundingColors(Array.from(gameContainer.children).indexOf(square), 'brightBlue');
+                } else if (rule === 'aboveBelowGreen') {
+                    changeAboveBelow(Array.from(gameContainer.children).indexOf(square), 'ecoGreen');
+                } else if (rule === 'selfSurroundingBlack') {
+                    changeColor(Array.from(gameContainer.children).indexOf(square), 'black'); // Self to black
+                    changeSurroundingColors(Array.from(gameContainer.children).indexOf(square), 'black'); // Surrounding to black
                 }
             });
-        });
-
+        }
+    
         checkWinCondition();
     }
 
