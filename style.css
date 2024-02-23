@@ -1,12 +1,11 @@
 body {
-    background-color: #A6E2DC;
+    /* Adjust the body to use flexbox layout to organize items horizontally */
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center; /* Center children horizontally */
-    justify-content: center; /* Center children vertically */
-    height: 100vh;
-    margin: 0;
-    padding: 40px 0; /* Add some padding at the top and bottom */
+    flex-direction: row; /* Align children horizontally */
+    justify-content: center; /* Center children horizontally */
+    align-items: start; /* Align items to the start of the cross axis */
+    flex-wrap: wrap; /* Allow items to wrap as needed */
+    gap: 20px; /* Add some space between the game board and the instructions box */
 }
 
 .game-container {
@@ -24,17 +23,14 @@ body {
 }
 
 .instructions-box {
-    position: fixed; /* Fixed positioning */
-    top: 10px; /* Position at the top */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center align the element */
+    /* No need for absolute positioning here */
+    width: 300px; /* Fixed width for the instructions box */
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
-    z-index: 10; /* Ensure it's above other elements */
-    max-width: 80%; /* Prevent it from becoming too wide */
+    z-index: 10;
 }
 
 .brightBlue {
